@@ -8,11 +8,18 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-　
+
 public class TCPclient {
-	static final int MIN_REQUESTS = 300;
-	static String ip = "";
+	private static final int MIN_REQUESTS = 300;
+	private static final int MAX_USERS = 10;
 	private static class User implements Runnable{
+		int n;
+		String ip;
+		public User(int n, String ip){
+			this.n = n;
+			this.ip = ip;
+		}
+		
 		@Override
 		public void run() {
 			try {
@@ -20,7 +27,7 @@ public class TCPclient {
 	            Socket socket = new Socket(ip, 80);
 	            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 	            BufferedReader server = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	            message = "HELLO " + socket.getLocalAddress() + " " + socket.getLocalPort() + " " /*+ n*/ + System.lineSeparator();
+	            message = "HELLO " + socket.getLocalAddress() + " " + socket.getLocalPort() + " " + n + System.lineSeparator();
 	            System.out.println(message);
 	            output.writeBytes(message);
 	            response = server.readLine();
@@ -38,15 +45,15 @@ public class TCPclient {
 		}
 	}
 	
-	//public static ExecutorService USER_POOL = Executors.newFixedThreadPool(10);
-	
     public static void main(String args[]) {
     	Scanner inpt = new Scanner(System.in);
     	System.out.print("Give server IP: ");
-    	ip = inpt.nextLine();
-    	int n = 0;
-        
+    	String ip = inpt.nextLine();
+    	ExecutorService USER_POOL = Executors.newFixedThreadPool(10);
+    	for (int i = 0; i < MAX_USERS; i++){
+    		User user = new User(i, ip);
+    		USER_POOL.submit(user);
+    	}
         inpt.close();
     }
 }
-　
