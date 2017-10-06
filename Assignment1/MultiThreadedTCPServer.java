@@ -10,40 +10,45 @@ import java.util.concurrent.Executors;
 
 public class MultiThreadedTCPServer {
     private static class TCPWorker implements Runnable {
-        private Socket client;
-        private String clientbuffer;
-        public TCPWorker(Socket client) {
-            this.client = client;
-            this.clientbuffer = "";
-        }
-        @Override
-        public void run() {
-            try {
-                System.out.println("Client connected with: " + this.client.getInetAddress());
+		private Socket client;
+		private String clientbuffer;
+		public TCPWorker(Socket client) {
+			this.client = client;
+			this.clientbuffer = "";
+		}
 
-                DataOutputStream output = new DataOutputStream(client.getOutputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
-                this.clientbuffer = reader.readLine();
-                System.out.println("[" + new Date() + "] Received: " + this.clientbuffer);
-                output.writeBytes(this.clientbuffer.toUpperCase() + System.lineSeparator());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+		@Override
+		public void run() {
+			try {
+				System.out.println("Client connected with: " + this.client.getInetAddress());
+				DataOutputStream output = new DataOutputStream(client.getOutputStream());
+				BufferedReader reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
+				while (client.isConnected() && !client.isClosed()){
+					this.clientbuffer = reader.readLine();
+					if (this.clientbuffer.equals("FIN" + System.lineSeparator())){break;}
+					System.out.println("[" + new Date() + "] Received: " + this.clientbuffer);
+					output.writeBytes(this.clientbuffer.toUpperCase() + System.lineSeparator());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+    
     public static ExecutorService TCP_WORKER_SERVICE = Executors.newFixedThreadPool(10);
-    public static void main(String args[]) {
-        try {
-            ServerSocket socket = new ServerSocket(80);
-            System.out.println("Server listening to: " + socket.getInetAddress() + ":" + socket.getLocalPort());
-            while (true) {
-                Socket client = socket.accept();
-                TCP_WORKER_SERVICE.submit(new TCPWorker(client));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
+	public static void main(String args[]) {
+		try {
+			@SuppressWarnings("resource")
+			ServerSocket socket = new ServerSocket(80);
+			System.out.println("Server listening to: " + socket.getInetAddress() + ":" + socket.getLocalPort());
+			while (true) {
+				Socket client = socket.accept();
+				TCP_WORKER_SERVICE.submit(new TCPWorker(client));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
 
