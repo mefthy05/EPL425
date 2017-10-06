@@ -22,7 +22,7 @@ public class TCPclient {
 		
 		@Override
 		public void run() {
-			try {
+		try {
 	            String message, response;
 	            Socket socket = new Socket(ip, 80);
 	            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
