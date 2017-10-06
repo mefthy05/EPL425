@@ -37,8 +37,7 @@ public class TCPClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
+        inpt.close();
     }
 
 }
