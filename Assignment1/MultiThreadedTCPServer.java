@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,16 +12,30 @@ public class MultiThreadedTCPServer {
 	private static class TCPWorker implements Runnable {
 		private Socket client;
 		private String clientbuffer;
+		private String lowload = null;
+		private String highload = null;
 
 		public TCPWorker(Socket client) {
 			this.client = client;
 			this.clientbuffer = "";
+			StringBuilder s1 = new StringBuilder();
+			StringBuilder s2 = new StringBuilder();
+			if (lowload != null && highload != null)
+				return;
+			for (int i = 0; i < 300000; i++)
+				s1.append('c');
+			for (int i = 0; i < 2000000; i++)
+				s2.append('c');
+			this.lowload = s1.toString();
+			this.highload = s2.toString();
 		}
 
 		@Override
 		public void run() {
-			try {	int totalRequests = 0;
+			try {
+				int totalRequests = 0;
 				long start = System.currentTimeMillis();
+				Random ran = new Random();
 				System.out.println("Client connected with: " + this.client.getInetAddress());
 				DataOutputStream output = new DataOutputStream(client.getOutputStream());
 				BufferedReader reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
@@ -30,7 +44,10 @@ public class MultiThreadedTCPServer {
 					if (this.clientbuffer == null){
 						break;
 					}
-					output.writeBytes(this.clientbuffer.toUpperCase() + System.lineSeparator());
+					if (ran.nextInt(100) < 50)
+						output.writeBytes(this.highload + System.lineSeparator());
+					else
+						output.writeBytes(this.highload + System.lineSeparator());
 					totalRequests++;
 				}
 				long end = System.currentTimeMillis();
