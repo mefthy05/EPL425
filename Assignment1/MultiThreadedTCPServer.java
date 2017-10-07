@@ -26,10 +26,13 @@ public class MultiThreadedTCPServer {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
 				while (client.isConnected() && !client.isClosed()){
 					this.clientbuffer = reader.readLine();
-					if (this.clientbuffer.equals("FIN" + System.lineSeparator())){break;}
+					if (this.clientbuffer.equals(null)){
+						continue;
+					}
 					System.out.println("[" + new Date() + "] Received: " + this.clientbuffer);
 					output.writeBytes(this.clientbuffer.toUpperCase() + System.lineSeparator());
 				}
+				client.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
