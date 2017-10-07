@@ -22,7 +22,7 @@ public class TCPclient {
 		
 		@Override
 		public void run() {
-		try {
+			try {
 	            String message, response;
 	            Socket socket = new Socket(ip, 80);
 	            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
@@ -37,8 +37,7 @@ public class TCPclient {
 	            	response = server.readLine();
 	                System.out.println("[" + new Date() + "] Received: " + response);
 	            }
-	            output.writeBytes("FIN" + System.lineSeparator());
-	            socket.close();
+	            	socket.close();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
@@ -49,11 +48,12 @@ public class TCPclient {
     	Scanner inpt = new Scanner(System.in);
     	System.out.print("Give server IP: ");
     	String ip = inpt.nextLine();
-    	ExecutorService USER_POOL = Executors.newFixedThreadPool(10);
+    	ExecutorService userPool = Executors.newFixedThreadPool(10);
     	for (int i = 0; i < MAX_USERS; i++){
     		User user = new User(i, ip);
-    		USER_POOL.submit(user);
+    		userPool.submit(user);
     	}
         inpt.close();
+        userPool.shutdown();
     }
 }
