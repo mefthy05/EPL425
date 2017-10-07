@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server {
+public class MultiThreadedTCPServer {
 	private static class TCPWorker implements Runnable {
 		private Socket client;
 		private String clientbuffer;
