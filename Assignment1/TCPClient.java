@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TCPclient {
+public class TCPClient {
 	private static final int MIN_REQUESTS = 300;
 	private static final int MAX_USERS = 10;
 	private static class User implements Runnable{
