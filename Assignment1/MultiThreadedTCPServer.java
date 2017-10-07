@@ -36,15 +36,16 @@ public class MultiThreadedTCPServer { 
 	 try {   
 		 @SuppressWarnings("resource")   ServerSocket socket = new ServerSocket(80); 
 		 System.out.println("Server listening to: " + socket.getInetAddress() + ":" + socket.getLocalPort());
-   int requests = 0;
-   long startTime = System.currentTimeMillis();
+   //int requests = 0;
+   //long startTime = System.currentTimeMillis();
    while (true) {  
 	   Socket client = socket.accept();    
 	   TCP_WORKER_SERVICE.submit(new TCPWorker(client)); 
-	   requests++;   }
-   long endTime = System.currentTimeMillis();
-   long totalTime = endTime - startTime; 
-		 long throughput = requests / totalTime;
-   System.out.println("\nThroughput is: " + throughput);
+	//   requests++;
+   }
+   //long endTime = System.currentTimeMillis();
+   //long totalTime = endTime - startTime; 
+		// long throughput = requests / totalTime;
+   //System.out.println("\nThroughput is: " + throughput);
   } catch (IOException e) {   e.printStackTrace(); 
 			  } }}
