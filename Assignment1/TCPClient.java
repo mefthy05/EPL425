@@ -23,6 +23,8 @@ public class TCPClient {
 		@Override
 		public void run() {
 			try {
+		    int requests = 0;
+		    long totalRTT = 0;
 	            String message, response;
 	            Socket socket = new Socket(ip, 80);
 	            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
@@ -33,10 +35,15 @@ public class TCPClient {
 	            response = server.readLine();
 	            Random ran = new Random();
 	            for(int i = 0; i < ran.nextInt(100) + MIN_REQUESTS; i++){
+	            	long start = System.currentTimeMillis();
 	            	output.writeBytes(message);
 	            	response = server.readLine();
-	                System.out.println("[" + new Date() + "] Received: " + response);
+	            	long end = System.currentTimeMillis();
+	            	totalRTT += end - start;
+	            	requests++;
 	            }
+		    double avgRTT = totalRTT / requests;
+	            System.out.println("RTT = " + avgRTT);
 	            	socket.close();
 	        } catch (IOException e) {
 	            e.printStackTrace();
