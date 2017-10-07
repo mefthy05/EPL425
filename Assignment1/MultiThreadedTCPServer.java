@@ -20,18 +20,23 @@ public class MultiThreadedTCPServer {
 
 		@Override
 		public void run() {
-			try {
+			try {	int totalRequests = 0;
+				long start = System.currentTimeMillis();
 				System.out.println("Client connected with: " + this.client.getInetAddress());
 				DataOutputStream output = new DataOutputStream(client.getOutputStream());
 				BufferedReader reader = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
 				while (client.isConnected() && !client.isClosed()){
 					this.clientbuffer = reader.readLine();
-					if (this.clientbuffer.equals(null)){
-						continue;
+					if (this.clientbuffer == null){
+						break;
 					}
-					System.out.println("[" + new Date() + "] Received: " + this.clientbuffer);
 					output.writeBytes(this.clientbuffer.toUpperCase() + System.lineSeparator());
+					totalRequests++;
 				}
+				long end = System.currentTimeMillis();
+				long time = end - start;
+				double throughput = (double)totalRequests / time;
+				System.out.println("Throughput: " + throughput);
 				client.close();
 			} catch (IOException e) {
 				e.printStackTrace();
