@@ -45,7 +45,6 @@ public class Server {
 						break;
 					}
 					int userID = Integer.parseInt(this.clientbuffer.split(" ")[3]);
-					System.out.println("Sending req " + totalRequests + " to " + userID);
 					output.writeBytes("WELCOME " + userID + " " + load + System.lineSeparator());
 					CPUtotal += os.getSystemLoadAverage();
 					memUtil += Runtime.getRuntime().freeMemory() / (double)Runtime.getRuntime().totalMemory();
