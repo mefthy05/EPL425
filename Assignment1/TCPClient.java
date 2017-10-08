@@ -3,7 +3,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -23,16 +22,13 @@ public class TCPClient {
 		@Override
 		public void run() {
 			try {
-		    int requests = 0;
-		    long totalRTT = 0;
+				int requests = 0;
+				long totalRTT = 0;
 	            String message, response;
 	            Socket socket = new Socket(ip, 80);
 	            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 	            BufferedReader server = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	            message = "HELLO " + socket.getLocalAddress() + " " + socket.getLocalPort() + " " + n + System.lineSeparator();
-	            System.out.println(message);
-	            output.writeBytes(message);
-	            response = server.readLine();
 	            Random ran = new Random();
 	            for(int i = 0; i < ran.nextInt(100) + MIN_REQUESTS; i++){
 	            	long start = System.currentTimeMillis();
@@ -42,9 +38,9 @@ public class TCPClient {
 	            	totalRTT += end - start;
 	            	requests++;
 	            }
-		    double avgRTT = totalRTT / requests;
+	            double avgRTT = totalRTT / requests;
 	            System.out.println("RTT = " + avgRTT);
-	            	socket.close();
+	            socket.close();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
