@@ -44,10 +44,12 @@ public class MultiThreadedTCPServer {
 					if (this.clientbuffer == null){
 						break;
 					}
+					if (!this.clientbuffer.contains("HELLO"))
+						continue;
 					if (ran.nextInt(100) < 50)
-						output.writeBytes(this.highload + System.lineSeparator());
+						output.writeBytes("WELCOME" + this.highload + System.lineSeparator());
 					else
-						output.writeBytes(this.highload + System.lineSeparator());
+						output.writeBytes("WELCOME" + this.highload + System.lineSeparator());
 					totalRequests++;
 				}
 				long end = System.currentTimeMillis();
